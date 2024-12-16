@@ -10,6 +10,15 @@ const axiosInstance = axios.create({
   },
 });
 
+// Add JWT Token to headers if it's available
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Centralized error handling
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -23,9 +32,9 @@ export const api = {
   login: (data) => axiosInstance.post("/auth/login", data),
   register: (data) => axiosInstance.post("/auth/register", data),
   googleLogin: () => axiosInstance.get("/auth/google"),
-  shortenUrl: (data) => axiosInstance.post("/url", data),
-  getUrls: () => axiosInstance.get("/url"),
-  deleteUrl: (id) => axiosInstance.delete(`/url/${id}`),
-  getStats: () => axiosInstance.get("/stats"),
-  getTopUrls: () => axiosInstance.get("/top-urls"),
+  manageUrls: () => axiosInstance.get("/url/manage"),
+  getStatistics: () => axiosInstance.get("/url/statistics"),
+  deleteUrl: (shortUrl) => axiosInstance.delete("/url/" + shortUrl),
+  getTopUrls: () => axiosInstance.get("/url/top"),
+  shortenUrl: (data) => axiosInstance.post("/url/shorten", data),
 };

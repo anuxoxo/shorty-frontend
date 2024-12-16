@@ -46,14 +46,15 @@ export default function LoginPage() {
         {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="bg-blue-500 text-white px-4 py-2 rounded inline-block w-full"
         >
           Login
         </button>
+        <div className="w-full text-center text-gray-400">OR</div>
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="bg-red-500 text-white px-4 py-2 rounded"
+          className="bg-red-500 text-white px-4 py-2 rounded ml-2 inline-block w-full"
         >
           Login with Google
         </button>

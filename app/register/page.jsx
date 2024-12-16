@@ -22,6 +22,10 @@ export default function RegisterPage() {
     }
   };
 
+  const handleGoogleRegister = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+  };
+
   return (
     <div className="flex justify-center items-center h-screen">
       <form onSubmit={handleRegister} className="space-y-4">
@@ -50,9 +54,17 @@ export default function RegisterPage() {
         {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded"
+          className="bg-green-500 text-white px-4 py-2 rounded inline-block w-full"
         >
           Register
+        </button>
+        <div className="w-full text-center text-gray-400">OR</div>
+        <button
+          type="button"
+          onClick={handleGoogleRegister}
+          className="bg-red-500 text-white px-4 py-2 rounded ml-2 inline-block w-full"
+        >
+          Login with Google
         </button>
       </form>
     </div>
