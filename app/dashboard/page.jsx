@@ -2,15 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { api } from "@/utils/api";
-import { useRouter } from "next/navigation";
 import UrlCard from "@/components/UrlCard";
 import UrlShortener from "@/components/UrlShortener";
 
 const DashboardPage = () => {
   const [urls, setUrls] = useState([]);
-  const [statistics, setStatistics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchUrls = async () => {
@@ -22,17 +19,7 @@ const DashboardPage = () => {
       }
     };
 
-    const fetchStatistics = async () => {
-      try {
-        const { data } = await api.getStatistics();
-        setStatistics(data.statistics);
-      } catch (error) {
-        console.error("Error fetching statistics:", error);
-      }
-    };
-
     fetchUrls();
-    fetchStatistics();
     setLoading(false);
   }, []);
 
@@ -46,31 +33,42 @@ const DashboardPage = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="text-xl font-semibold text-gray-700">Loading...</span>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h1>Your Dashboard</h1>
-      {/* Include the URL Shortener form */}
+    <div className="max-w-7xl mx-auto p-8">
+      <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">
+        Your Dashboard
+      </h1>
+
+      {/* URL Shortener Form */}
       <UrlShortener setUrls={setUrls} />
 
-      <h2>Your Shortened URLs</h2>
-      <div className="url-list">
-        {urls.length === 0 ? (
-          <p>No URLs shortened yet.</p>
-        ) : (
-          urls.map((url) => <UrlCard key={url.shortUrl} url={url} />)
-        )}
-      </div>
-      <h2>Statistics</h2>
-      <div className="stats-list">
-        {statistics.map((stat) => (
-          <div key={stat.shortUrl}>
-            <strong>{stat.originalUrl}</strong>: {stat.clickCount} clicks
-          </div>
-        ))}
-      </div>
+      <section className="mt-8">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4 text-center">
+          Your Shortened URLs
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {urls.length === 0 ? (
+            <p className="text-center text-gray-600">
+              No URLs shortened yet. Start by shortening some!
+            </p>
+          ) : (
+            urls.map((url) => (
+              <UrlCard
+                key={url.shortUrl}
+                url={url}
+                handleDelete={handleDelete}
+              />
+            ))
+          )}
+        </div>
+      </section>
     </div>
   );
 };
