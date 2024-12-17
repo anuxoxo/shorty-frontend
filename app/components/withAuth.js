@@ -27,6 +27,7 @@ const withAuth = (Component) => {
           userCtx.fetchUser();
         }
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isClient, router]);
 
     // If we're on the client and the user is authenticated, render the component

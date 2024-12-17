@@ -7,6 +7,7 @@ import { ACCESS_TOKEN } from "@/utils/constants";
 import googleIcon from "@/assets/google.png";
 import { motion } from "framer-motion"; // For animations
 import Image from "next/image";
+import { toast } from "react-toastify"; // React Toastify
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -21,7 +22,10 @@ export default function LoginPage() {
       localStorage.setItem(ACCESS_TOKEN, data.accessToken); // Store JWT token
       router.push("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError(err?.response?.data?.error || "Login failed.");
+      toast.error(
+        err.message || err?.response?.data?.error || "An error occurred."
+      );
     }
   };
 
