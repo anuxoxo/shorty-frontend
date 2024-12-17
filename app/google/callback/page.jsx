@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ACCESS_TOKEN } from "@/utils/constants";
 
 export default function GoogleCallbackPage() {
   const router = useRouter();
@@ -13,8 +14,7 @@ export default function GoogleCallbackPage() {
       const token = urlParams.get("token");
 
       if (token) {
-        // Store the token in sessionStorage or localStorage
-        sessionStorage.setItem("token", token); // or localStorage.setItem("token", token)
+        localStorage.setItem(ACCESS_TOKEN, token);
 
         // Redirect the user to the dashboard or home page
         router.push("/dashboard");

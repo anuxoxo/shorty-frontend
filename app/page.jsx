@@ -2,24 +2,25 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { ACCESS_TOKEN } from "./utils/constants";
 
+const accessToken = localStorage.getItem(ACCESS_TOKEN);
 export default function HomePage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check if the user is authenticated (e.g., by checking the JWT token in localStorage)
+  // Check if the user is authenticated
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    if (accessToken) {
       setIsAuthenticated(true);
     }
   }, []);
 
   // Handle logout logic
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token from localStorage
-    setIsAuthenticated(false); // Update authentication state
-    router.push("/"); // Redirect to homepage
+    localStorage.removeItem(ACCESS_TOKEN);
+    setIsAuthenticated(false);
+    router.push("/");
   };
 
   const navigateTo = (path) => {

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { api } from "@/utils/api";
 import { useRouter } from "next/navigation";
+import { ACCESS_TOKEN } from "@/utils/constants";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const { data } = await api.login({ email, password });
-      localStorage.setItem("token", data.token); // Store JWT token
+      localStorage.setItem(ACCESS_TOKEN, data.accessToken); // Store JWT token
       router.push("/dashboard");
     } catch (err) {
       setError(err.message);
