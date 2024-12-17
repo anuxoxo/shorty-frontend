@@ -90,4 +90,5 @@ export const api = {
   shortenUrl: (data) => axiosInstance.post("/url/shorten", data),
   fetchUserDetails: () => axiosInstance.get("/auth/user-details"),
   logout: () => axiosInstance.get("/auth/logout"),
+  editUrl: (shortUrl, data) => axiosInstance.put(`/url/${shortUrl}/edit`, data),
 };

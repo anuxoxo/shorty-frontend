@@ -46,6 +46,21 @@ const DashboardPage = () => {
     }
   };
 
+  const handleUpdate = async (shortUrl, newOriginalUrl) => {
+    try {
+      await api.editUrl(shortUrl, {
+        originalUrl: newOriginalUrl,
+      });
+      toast.success("Updated Successfully!");
+    } catch (error) {
+      console.error(
+        "Error updating URL:",
+        error.response ? error.response.data : error
+      );
+      toast.error("Error updating URL");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -92,6 +107,7 @@ const DashboardPage = () => {
                   key={url?.shortUrl}
                   url={url}
                   onDelete={handleDelete}
+                  onUpdate={handleUpdate}
                   className="transition-transform transform hover:scale-105 shadow-lg rounded-lg bg-white p-6"
                 />
               ))}
