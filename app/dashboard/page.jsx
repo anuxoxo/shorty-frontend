@@ -5,15 +5,11 @@ import { api } from "@/utils/api";
 import UrlCard from "@/components/UrlCard";
 import UrlShortener from "@/components/UrlShortener";
 import { useUser } from "@/context/userContext";
+import withAuth from "@/components/withAuth";
 
 const DashboardPage = () => {
   const [urls, setUrls] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userCtx = useUser();
-
-  // useEffect(() => {
-  //   userCtx.fetchUser();
-  // }, []);
 
   useEffect(() => {
     const fetchUrls = async () => {
@@ -79,4 +75,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default withAuth(DashboardPage);

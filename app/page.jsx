@@ -3,16 +3,18 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ACCESS_TOKEN } from "./utils/constants";
+import { useUser } from "./context/userContext";
 
 const accessToken = localStorage.getItem(ACCESS_TOKEN);
 
 export default function HomePage() {
   const router = useRouter();
+  const userCtx = useUser();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Check if the user is authenticated
   useEffect(() => {
-    if (accessToken) {
+    if (userCtx?.user?.email) {
       setIsAuthenticated(true);
     }
   }, []);

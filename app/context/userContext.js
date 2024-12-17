@@ -1,8 +1,8 @@
-// context/UserContext.js
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { api } from "@/utils/api";
+import { ACCESS_TOKEN } from "@/utils/constants"; // Make sure this constant matches your token key
 
 const UserContext = createContext();
 
@@ -22,9 +22,25 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const getToken = () => localStorage.getItem(ACCESS_TOKEN);
+
   useEffect(() => {
-    fetchUser();
-  }, []); // Runs once when the component mounts
+    const handleStorageChange = () => {
+      const token = getToken();
+      if (token) {
+        fetchUser();
+      } else {
+        setUser(null);
+      }
+    };
+
+    // Listen for changes in localStorage across tabs/windows
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, loading, error, setUser, fetchUser }}>
