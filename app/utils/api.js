@@ -71,4 +71,5 @@ export const api = {
   manageUrls: () => axiosInstance.get("/url/manage"),
   deleteUrl: (shortUrl) => axiosInstance.delete("/url/" + shortUrl),
   shortenUrl: (data) => axiosInstance.post("/url/shorten", data),
+  fetchUserDetails: () => axiosInstance.get("/auth/user-details"),
 };

@@ -4,10 +4,16 @@ import React, { useEffect, useState } from "react";
 import { api } from "@/utils/api";
 import UrlCard from "@/components/UrlCard";
 import UrlShortener from "@/components/UrlShortener";
+import { useUser } from "@/context/userContext";
 
 const DashboardPage = () => {
   const [urls, setUrls] = useState([]);
   const [loading, setLoading] = useState(true);
+  const userCtx = useUser();
+
+  useEffect(() => {
+    userCtx.fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchUrls = async () => {
@@ -19,7 +25,7 @@ const DashboardPage = () => {
       }
     };
 
-    fetchUrls();
+    // fetchUrls();
     setLoading(false);
   }, []);
 
@@ -47,7 +53,7 @@ const DashboardPage = () => {
       </h1>
 
       {/* URL Shortener Form */}
-      <UrlShortener setUrls={setUrls} />
+      {/* <UrlShortener setUrls={setUrls} />
 
       <section className="mt-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4 text-center">
@@ -68,7 +74,7 @@ const DashboardPage = () => {
             ))
           )}
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };

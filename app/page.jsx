@@ -7,6 +7,7 @@ import { ACCESS_TOKEN } from "./utils/constants";
 const accessToken = localStorage.getItem(ACCESS_TOKEN);
 export default function HomePage() {
   const router = useRouter();
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Check if the user is authenticated
