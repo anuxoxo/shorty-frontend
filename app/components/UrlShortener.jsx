@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { api } from "@/utils/api";
+import { toast } from "react-toastify";
 
 const UrlShortener = ({ setUrls }) => {
   const [url, setUrl] = useState("");
@@ -18,9 +19,11 @@ const UrlShortener = ({ setUrls }) => {
 
     try {
       const { data } = await api.shortenUrl({ originalUrl: url });
-      setUrls((prevUrls) => [data, ...prevUrls]);
+      console.log(data);
+      setUrls((prevUrls) => [data?.data, ...prevUrls]);
       setUrl("");
     } catch (err) {
+      toast.error("Failed to shorten URL. Please try again.");
       setError("Failed to shorten URL. Please try again.");
     } finally {
       setLoading(false);

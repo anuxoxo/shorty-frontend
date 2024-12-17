@@ -36,6 +36,7 @@ const DashboardPage = () => {
   const handleDelete = async (shortUrl) => {
     try {
       await api.deleteUrl(shortUrl);
+      toast.success("Deletion Successful!");
       setUrls((prevUrls) =>
         prevUrls.filter((url) => url.shortUrl !== shortUrl)
       );
@@ -68,7 +69,7 @@ const DashboardPage = () => {
       </div>
 
       {/* URL List Section */}
-      <div className="bg-white w-full">
+      <div className="bg-slate-100 w-full">
         <section className="mt-6 max-w-7xl py-48 pt-32 mx-auto">
           <h2 className="roboto-light inline-block text-3xl font-semibold text-gray-600 mb-6 text-center border-b-2 border-purple-500 pb-1">
             Your Shortened Links
@@ -85,10 +86,10 @@ const DashboardPage = () => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
-              {urls.map((url) => (
+            <div>
+              {urls?.map((url) => (
                 <UrlCard
-                  key={url.shortUrl}
+                  key={url?.shortUrl}
                   url={url}
                   onDelete={handleDelete}
                   className="transition-transform transform hover:scale-105 shadow-lg rounded-lg bg-white p-6"
