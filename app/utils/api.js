@@ -4,7 +4,7 @@ import { ACCESS_TOKEN } from "./constants";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // Create an Axios instance
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true, // To send cookies (like refresh token)
   headers: {
@@ -25,11 +25,16 @@ const refreshAccessToken = async () => {
 
 // Axios request interceptor to add access token to the headers
 axiosInstance.interceptors.request.use(
-  async (config) => {
+  (config) => {
+    // Check if the token exists in localStorage
     const token = localStorage.getItem(ACCESS_TOKEN);
 
     if (token) {
+      // If token exists, set it in Authorization header
       config.headers["Authorization"] = `Bearer ${token}`;
+    } else {
+      // If no token exists, make sure Authorization header is cleared
+      delete config.headers["Authorization"];
     }
 
     return config;
@@ -72,4 +77,5 @@ export const api = {
   deleteUrl: (shortUrl) => axiosInstance.delete("/url/" + shortUrl),
   shortenUrl: (data) => axiosInstance.post("/url/shorten", data),
   fetchUserDetails: () => axiosInstance.get("/auth/user-details"),
+  logout: () => axiosInstance.get("/auth/logout"),
 };

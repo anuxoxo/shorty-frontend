@@ -7,11 +7,12 @@ import userPlaceholderImage from "@/assets/user.png";
 import { ACCESS_TOKEN } from "@/utils/constants";
 import { useUser } from "@/context/userContext";
 import Loader from "./Loader";
+import { api, axiosInstance } from "@/utils/api";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { user, loading } = useUser();
+  const { user, setUser, loading } = useUser();
 
   const router = useRouter();
 
@@ -23,9 +24,21 @@ export default function Navbar() {
     }
   }, [user]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setUserMenuOpen(false);
+
+    // Clear user state or context (e.g., reset user context or state)
+    setUser(null);
+
+    // Remove access token from localStorage
     localStorage.removeItem(ACCESS_TOKEN);
+
+    await api.logout();
+
+    // Explicitly clear the Authorization header in Axios instance
+    axiosInstance.defaults.headers["Authorization"] = "";
+
+    // Log out the user by redirecting
     setIsLoggedIn(false);
     router.push("/login");
   };
@@ -44,65 +57,67 @@ export default function Navbar() {
 
           {/* Nav Options */}
           <div className="flex items-center">
-            {loading ? (
-              <Loader />
-            ) : isLoggedIn ? (
-              <>
-                {/* User Menu */}
-                <div className="relative">
-                  <button
-                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center focus:outline-none"
-                  >
-                    <Image
-                      src={user?.googlePhotoUrl || userPlaceholderImage}
-                      alt="Profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full border"
-                    />
-                  </button>
-                  {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                      {/* Profile Info */}
-                      <div className="p-4 text-gray-700 flex flex-col gap-2 items-center flex-wrap justify-center">
-                        <Image
-                          src={user?.googlePhotoUrl || userPlaceholderImage}
-                          alt="Profile"
-                          width={72}
-                          height={72}
-                          className="rounded-full border"
-                        />
-                        <div className="text-center">
-                          {user?.name && (
-                            <p className="font-semibold">{user?.name}</p>
-                          )}
-                          <p className="text-sm text-gray-500">
-                            {user?.email || "No email found"}
-                          </p>
+            {isLoggedIn ? (
+              loading ? (
+                <Loader />
+              ) : (
+                <>
+                  {/* User Menu */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setUserMenuOpen(!userMenuOpen)}
+                      className="flex items-center focus:outline-none"
+                    >
+                      <Image
+                        src={user?.googlePhotoUrl || userPlaceholderImage}
+                        alt="Profile"
+                        width={40}
+                        height={40}
+                        className="rounded-full border"
+                      />
+                    </button>
+                    {userMenuOpen && (
+                      <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                        {/* Profile Info */}
+                        <div className="p-4 text-gray-700 flex flex-col gap-2 items-center flex-wrap justify-center">
+                          <Image
+                            src={user?.googlePhotoUrl || userPlaceholderImage}
+                            alt="Profile"
+                            width={72}
+                            height={72}
+                            className="rounded-full border"
+                          />
+                          <div className="text-center">
+                            {user?.name && (
+                              <p className="font-semibold">{user?.name}</p>
+                            )}
+                            <p className="text-sm text-gray-500">
+                              {user?.email || "No email found"}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <hr />
+                        <hr />
 
-                      {/* Dashboard Link */}
-                      <Link
-                        href="/dashboard"
-                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      >
-                        Dashboard
-                      </Link>
-                      <hr />
-                      {/* Logout Button */}
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
+                        {/* Dashboard Link */}
+                        <Link
+                          href="/dashboard"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        >
+                          Dashboard
+                        </Link>
+                        <hr />
+                        {/* Logout Button */}
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )
             ) : (
               <>
                 {/* Login/Register Links */}

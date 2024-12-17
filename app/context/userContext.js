@@ -27,7 +27,7 @@ export const UserProvider = ({ children }) => {
   }, []); // Runs once when the component mounts
 
   return (
-    <UserContext.Provider value={{ user, loading, error, fetchUser }}>
+    <UserContext.Provider value={{ user, loading, error, setUser, fetchUser }}>
       {children}
     </UserContext.Provider>
   );
