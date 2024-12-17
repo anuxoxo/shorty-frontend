@@ -87,3 +87,10 @@ body {
   font-weight: 700;
   font-style: italic;
 }
+
+.rubik-italic {
+  font-family: "Rubik", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: italic;
+}

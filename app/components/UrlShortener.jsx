@@ -9,7 +9,7 @@ const UrlShortener = ({ setUrls }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!url) {
-      setError("Please enter a valid URL");
+      setError("Please enter a valid URL.");
       return;
     }
 
@@ -28,40 +28,45 @@ const UrlShortener = ({ setUrls }) => {
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-10 rounded-2xl shadow-xl mt-12 space-y-6">
-      <h2 className="text-4xl font-extrabold text-white text-center mb-6">
-        Shorten Your URL
+    <div className="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-md mt-10">
+      {/* Heading */}
+      <h2 className="text-3xl font-bold text-gray-800 text-center mb-4">
+        URL Shortener
       </h2>
+      <p className="text-center text-gray-600 mb-8">
+        Paste your long URL below and get a shorter version instantly.
+      </p>
 
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="relative">
           <input
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter your URL here"
-            className="w-full p-5 text-lg rounded-lg bg-white border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 placeholder-gray-500"
+            placeholder="Enter your link here..."
+            className="w-full px-5 py-4 pt-5 text-lg text-gray-700 rounded-lg bg-gray-100 border focus:outline-none focus:ring-2 focus:ring-indigo-500 transition placeholder-gray-500"
           />
+          {/* Error Message */}
           {error && (
-            <span className="absolute text-red-500 text-sm left-0 bottom-[-24px]">
+            <span className="absolute text-red-500 text-xs left-5 mt-1.5">
               {error}
             </span>
           )}
         </div>
 
-        <div>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-4 text-lg text-white font-semibold rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 transition duration-300 ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-700 hover:bg-indigo-800"
-            }`}
-          >
-            {loading ? "Shortening..." : "Shorten URL"}
-          </button>
-        </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full py-4 text-lg font-semibold text-white rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-lg ${
+            loading
+              ? "bg-indigo-400 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700"
+          }`}
+        >
+          {loading ? "Shortening..." : "Shorten URL"}
+        </button>
       </form>
     </div>
   );

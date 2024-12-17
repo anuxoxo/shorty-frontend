@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ export default function Navbar() {
   const { user, setUser, loading } = useUser();
 
   const router = useRouter();
+  const menuRef = useRef(null); // Ref for the menu
 
   useEffect(() => {
     if (user?.email) {
@@ -24,21 +25,28 @@ export default function Navbar() {
     }
   }, [user]);
 
+  // Close the menu if clicked outside
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   const handleLogout = async () => {
     setUserMenuOpen(false);
 
-    // Clear user state or context (e.g., reset user context or state)
     setUser(null);
-
-    // Remove access token from localStorage
     localStorage.removeItem(ACCESS_TOKEN);
-
     await api.logout();
-
-    // Explicitly clear the Authorization header in Axios instance
     axiosInstance.defaults.headers["Authorization"] = "";
 
-    // Log out the user by redirecting
     setIsLoggedIn(false);
     router.push("/login");
   };
@@ -50,20 +58,20 @@ export default function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="rubik-bold-italic s text-4xl italic font-extrabold text-indigo-500"
+            className="rubik-bold-italic text-4xl italic font-extrabold bg-gradient-to-r from-purple-500 to-indigo-500 text-transparent bg-clip-text"
           >
             shorty
           </Link>
 
           {/* Nav Options */}
-          <div className="flex items-center">
+          <div className="flex items-center space-x-6">
             {isLoggedIn ? (
               loading ? (
                 <Loader />
               ) : (
                 <>
                   {/* User Menu */}
-                  <div className="relative">
+                  <div className="relative" ref={menuRef}>
                     <button
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
                       className="flex items-center focus:outline-none"
@@ -73,13 +81,12 @@ export default function Navbar() {
                         alt="Profile"
                         width={40}
                         height={40}
-                        className="rounded-full border"
+                        className="rounded-full border border-gray-300 hover:border-purple-500"
                       />
                     </button>
                     {userMenuOpen && (
                       <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                        {/* Profile Info */}
-                        <div className="p-4 text-gray-700 flex flex-col gap-2 items-center flex-wrap justify-center">
+                        <div className="p-4 text-gray-700 flex flex-col gap-2 items-center">
                           <Image
                             src={user?.googlePhotoUrl || userPlaceholderImage}
                             alt="Profile"
@@ -97,8 +104,6 @@ export default function Navbar() {
                           </div>
                         </div>
                         <hr />
-
-                        {/* Dashboard Link */}
                         <Link
                           href="/dashboard"
                           className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
@@ -106,7 +111,6 @@ export default function Navbar() {
                           Dashboard
                         </Link>
                         <hr />
-                        {/* Logout Button */}
                         <button
                           onClick={handleLogout}
                           className="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
@@ -123,15 +127,17 @@ export default function Navbar() {
                 {/* Login/Register Links */}
                 <Link
                   href="/login"
-                  className="text-gray-600 hover:text-blue-500 mr-4"
+                  className="relative group text-gray-600 hover:text-purple-600 font-medium transition duration-300"
                 >
                   Login
+                  <span className="absolute -bottom-1 left-0 w-0 h-1 bg-purple-500 group-hover:w-full transition-all duration-300"></span>
                 </Link>
                 <Link
                   href="/register"
-                  className="text-gray-600 hover:text-blue-500"
+                  className="relative group text-gray-600 hover:text-purple-600 font-medium transition duration-300"
                 >
                   Register
+                  <span className="absolute -bottom-1 left-0 w-0 h-1 bg-purple-500 group-hover:w-full transition-all duration-300"></span>
                 </Link>
               </>
             )}

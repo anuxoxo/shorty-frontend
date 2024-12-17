@@ -27,7 +27,10 @@ export default function HomePage() {
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600 text-white">
       <div className="max-w-4xl text-center p-12 rounded-lg shadow-xl bg-white bg-opacity-10 backdrop-blur-xl">
         <h1 className="text-5xl font-extrabold mb-6 tracking-tight">
-          Welcome to Shorty
+          Welcome to{" "}
+          <span className="rubik-bold-italic border-b-4 border-purple-500 pb-1 ">
+            Shorty
+          </span>
         </h1>
         <p className="text-lg mb-8 leading-relaxed">
           Your ultimate URL shortener solution.
