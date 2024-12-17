@@ -46,26 +46,38 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      !error.config._retry
-    ) {
-      error.config._retry = true; // Prevent infinite retries
-      try {
-        const newToken = await refreshAccessToken();
-        localStorage.setItem(ACCESS_TOKEN, newToken);
+    // Check if the error is a 401 (Unauthorized) and if the user is logged out
 
-        // Update header and retry the original request
-        error.config.headers["Authorization"] = `Bearer ${newToken}`;
-        return axiosInstance(error.config);
-      } catch (refreshError) {
-        console.error("Token refresh failed", refreshError);
-        localStorage.removeItem(ACCESS_TOKEN); // Clear token
-        window.location.href = "/login"; // Redirect to login
+    if (error.response && error.response.status === 401) {
+      // If the error is related to a token refresh failure or logged-out state
+      if (
+        error.response.data &&
+        error.response.data.error === "Access token is missing."
+      ) {
+        // Handle logged-out state
+        return Promise.reject(error); // Don't retry the request in this case
+      }
+
+      // Retry the request for non-logged-out 401 errors (token expiry or invalid token)
+      if (!error.config._retry) {
+        error.config._retry = true; // Prevent infinite retries
+        try {
+          const newToken = await refreshAccessToken();
+          localStorage.setItem(ACCESS_TOKEN, newToken);
+
+          // Update header and retry the original request
+          error.config.headers["Authorization"] = `Bearer ${newToken}`;
+          return axiosInstance(error.config);
+        } catch (refreshError) {
+          console.error("Token refresh failed", refreshError);
+          localStorage.removeItem(ACCESS_TOKEN); // Clear token
+          window.location.href = "/login"; // Redirect to login
+          return Promise.reject(refreshError); // Reject the refresh token error
+        }
       }
     }
-    return Promise.reject(error);
+
+    return Promise.reject(error); // If not a 401 or unable to handle the error
   }
 );
 

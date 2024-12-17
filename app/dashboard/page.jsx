@@ -11,9 +11,9 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const userCtx = useUser();
 
-  useEffect(() => {
-    userCtx.fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   userCtx.fetchUser();
+  // }, []);
 
   useEffect(() => {
     const fetchUrls = async () => {
