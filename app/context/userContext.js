@@ -22,26 +22,6 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const getToken = () => localStorage.getItem(ACCESS_TOKEN);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const token = getToken();
-      if (token) {
-        fetchUser();
-      } else {
-        setUser(null);
-      }
-    };
-
-    // Listen for changes in localStorage across tabs/windows
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
   return (
     <UserContext.Provider value={{ user, loading, error, setUser, fetchUser }}>
       {children}

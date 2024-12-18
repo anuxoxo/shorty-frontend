@@ -2,10 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ACCESS_TOKEN } from "./utils/constants";
 import { useUser } from "./context/userContext";
-
-const accessToken = localStorage.getItem(ACCESS_TOKEN);
 
 export default function HomePage() {
   const router = useRouter();
@@ -17,7 +14,7 @@ export default function HomePage() {
     if (userCtx?.user?.email) {
       setIsAuthenticated(true);
     }
-  }, []);
+  }, [userCtx]);
 
   const navigateTo = (path) => {
     router.push(path);

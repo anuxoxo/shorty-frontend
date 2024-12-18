@@ -45,12 +45,9 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     setUserMenuOpen(false);
-
     setUser(null);
-    localStorage.removeItem(ACCESS_TOKEN);
-    await api.logout();
-    axiosInstance.defaults.headers["Authorization"] = "";
 
+    await api.logout();
     setIsLoggedIn(false);
     router.push("/login");
   };

@@ -1,10 +1,10 @@
-# Step 1: Use Node.js as the base image
-FROM node:18-alpine
+# Step 1: Use the specific Node.js version (22.12.0)
+FROM node:22.12.0
 
-# Step 2: Set the working directory inside the container
+# Step 2: Set the working directory in the container
 WORKDIR /app
 
-# Step 3: Copy the package.json and package-lock.json (or yarn.lock) files
+# Step 3: Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Step 4: Install dependencies
