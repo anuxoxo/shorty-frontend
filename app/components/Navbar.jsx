@@ -12,10 +12,14 @@ import { api, axiosInstance } from "@/utils/api";
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { user, setUser, loading } = useUser();
+  const { user, setUser, loading, fetchUser } = useUser();
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const router = useRouter();
-  const menuRef = useRef(null); // Ref for the menu
+  const menuRef = useRef(null);
 
   useEffect(() => {
     if (user?.email) {

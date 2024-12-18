@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { api } from "@/utils/api";
 import UrlCard from "@/components/UrlCard";
 import UrlShortener from "@/components/UrlShortener";
-import withAuth from "@/components/withAuth";
 import { FaLink } from "react-icons/fa"; // Import for a visual icon (optional)
 import { toast } from "react-toastify";
 
@@ -16,8 +15,8 @@ const DashboardPage = () => {
     const fetchUrls = async () => {
       try {
         const { data } = await api.manageUrls();
-        if (Array.isArray(data)) {
-          setUrls(data);
+        if (Array.isArray(data?.data)) {
+          setUrls(data?.data);
         } else {
           setUrls([]);
         }
@@ -46,11 +45,12 @@ const DashboardPage = () => {
     }
   };
 
-  const handleUpdate = async (shortUrl, newOriginalUrl) => {
+  const handleUpdate = async (shortUrl, newOriginalUrl, callback) => {
     try {
       await api.editUrl(shortUrl, {
         originalUrl: newOriginalUrl,
       });
+      callback();
       toast.success("Updated Successfully!");
     } catch (error) {
       console.error(
@@ -119,4 +119,4 @@ const DashboardPage = () => {
   );
 };
 
-export default withAuth(DashboardPage);
+export default DashboardPage;

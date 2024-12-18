@@ -7,15 +7,31 @@ import {
   FaEye,
   FaEdit,
 } from "react-icons/fa";
+import { confirmAlert } from "react-confirm-alert"; // Import the confirmation library
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import styles for the modal
 
 const UrlCard = ({ url, onDelete, onUpdate }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newUrl, setNewUrl] = useState(url.originalUrl);
+  const [originalUrl, setOriginalUrl] = useState(url.originalUrl);
   const shortUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/url/${url.shortUrl}`;
 
   const handleDelete = () => {
-    onDelete(url.shortUrl);
+    confirmAlert({
+      title: "Confirm Deletion",
+      message: "Are you sure you want to delete this URL?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => onDelete(url.shortUrl),
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+    });
   };
 
   const handleCopy = () => {
@@ -35,9 +51,10 @@ const UrlCard = ({ url, onDelete, onUpdate }) => {
   };
 
   const handleSave = () => {
-    if (newUrl && newUrl !== url.originalUrl) {
-      onUpdate(url.shortUrl, newUrl);
-      url.originalUrl = newUrl;
+    if (newUrl) {
+      onUpdate(url.shortUrl, newUrl, () => {
+        setOriginalUrl(newUrl);
+      });
     }
     setIsEditing(false);
   };
@@ -49,10 +66,10 @@ const UrlCard = ({ url, onDelete, onUpdate }) => {
   return (
     <div className="flex flex-col p-6 bg-white rounded-xl mb-6 w-full gap-4 shadow-md border-4 border-transparent bg-clip-border border-t-4 border-l-4 border-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
       {/* Original URL */}
-      <div className="mb-4 flex items-center gap-2">
+      <div className="mb-4 flex items-center gap-2 w-full">
         <FaLink className="text-indigo-600" size={20} />
-        <div className="font-semibold text-gray-800 text-sm">
-          <div className="flex gap-2 items-center justify-center">
+        <div className="font-semibold text-gray-800 text-sm w-full">
+          <div className="flex gap-2 items-center">
             {isEditing ? (
               <input
                 type="url"
@@ -61,12 +78,8 @@ const UrlCard = ({ url, onDelete, onUpdate }) => {
                 className="text-gray-800 text-sm w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             ) : (
-              <a
-                href={url.originalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {url.originalUrl}
+              <a href={originalUrl} target="_blank" rel="noopener noreferrer">
+                {originalUrl}
               </a>
             )}
             {/* Edit and Save Buttons */}
@@ -131,7 +144,7 @@ const UrlCard = ({ url, onDelete, onUpdate }) => {
       <div className="mb-4">
         <div className="text-gray-400 text-sm flex gap-2 items-center justify-center font-bold">
           <FaEye size={18} />
-          Total Views: {url.clickCount}
+          Total Views: {url.clickCount || 0}
         </div>
       </div>
     </div>

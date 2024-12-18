@@ -2,47 +2,48 @@
 
 import { useState } from "react";
 import { api } from "@/utils/api";
-import { useRouter } from "next/navigation";
-import { ACCESS_TOKEN } from "@/utils/constants";
 import { motion } from "framer-motion"; // For animations
 import { toast } from "react-toastify"; // React Toastify
 import googleIcon from "@/assets/google.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/context/userContext";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
+
+  const userCtx = useUser();
 
   const login = async () => {
     try {
-      const { data } = await api.login({ email, password });
-      localStorage.setItem(ACCESS_TOKEN, data.accessToken); // Store JWT token
+      await api.login({ email, password });
+      userCtx.fetchUser();
+
       router.push("/dashboard");
     } catch (err) {
-      setError(err?.response?.data?.error || "Login failed.");
-      toast.error(
-        err.message || err?.response?.data?.error || "An error occurred."
-      );
+      setError(err?.response?.data?.message || "Login failed.");
+      toast.error(err?.response?.data?.message || "An error occurred.");
     }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await api.register({ name, email, password });
-      localStorage.setItem(ACCESS_TOKEN, data.token); // Store JWT token
+      await api.register({ name, email, password });
       toast.success("Registration successful! Redirecting to dashboard...");
       setTimeout(() => {
         login();
       }, 2000); // Delay to show the success toast
     } catch (err) {
       setError(
-        err?.response?.data?.error || "Registration failed. Please try again."
+        err?.response?.data?.message || "Registration failed. Please try again."
       );
-      toast.error(err?.response?.data?.error || "An error occurred.");
+      toast.error(err?.response?.data?.message || "An error occurred.");
     }
   };
 

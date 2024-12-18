@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
   const fetchUser = async () => {
     try {
       const userData = await api.fetchUserDetails();
-      setUser(userData?.data?.user);
+      setUser(userData?.data?.data);
     } catch (err) {
       setError(err);
     } finally {

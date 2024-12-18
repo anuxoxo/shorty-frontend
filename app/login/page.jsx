@@ -3,29 +3,30 @@
 import { useState } from "react";
 import { api } from "@/utils/api";
 import { useRouter } from "next/navigation";
-import { ACCESS_TOKEN } from "@/utils/constants";
 import googleIcon from "@/assets/google.png";
 import { motion } from "framer-motion"; // For animations
 import Image from "next/image";
 import { toast } from "react-toastify"; // React Toastify
+import { useUser } from "@/context/userContext";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
+
+  const userCtx = useUser();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await api.login({ email, password });
-      localStorage.setItem(ACCESS_TOKEN, data.accessToken); // Store JWT token
+      await api.login({ email, password });
+      userCtx.fetchUser();
       router.push("/dashboard");
     } catch (err) {
-      setError(err?.response?.data?.error || "Login failed.");
-      toast.error(
-        err.message || err?.response?.data?.error || "An error occurred."
-      );
+      setError(err?.response?.data?.message || "Login failed.");
+      toast.error(err?.response?.data?.message || "An error occurred.");
     }
   };
 
@@ -47,6 +48,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <input
+              required
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -56,6 +58,7 @@ export default function LoginPage() {
           </div>
           <div>
             <input
+              required
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
