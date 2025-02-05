@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shorty-fe-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shorty-fe
+  template:
+    metadata:
+      labels:
+        app: shorty-fe
+    spec:
+      containers:
+      - name: shorty-fe
+        image: <your-dockerhub-username>/shorty-fe:latest
+        ports:
+        - containerPort: 3000
